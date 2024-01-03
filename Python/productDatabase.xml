@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productDatabase>
+    <product>
+        <productID>1</productID>
+        <productName>Carte</productName>
+        <productDetail>Descriere produs 1</productDetail>
+        <productPhoto>images/1.png</productPhoto>
+    </product>
+        <product>
+        <productID>2</productID>
+        <productName>Pix</productName>
+        <productDetail>Descriere produs 2</productDetail>
+        <productPhoto>images/2.jpg</productPhoto>
+    </product>
+    <product>
+        <productID>3</productID>
+        <productName>Stilou</productName>
+        <productDetail>Descriere produs 3</productDetail>
+        <productPhoto>images/3.png</productPhoto>
+    </product>
+        <product>
+        <productID>4</productID>
+        <productName>Creion</productName>
+        <productDetail>Descriere produs 4</productDetail>
+        <productPhoto>images/4.png</productPhoto>
+    </product>
+        <product>
+        <productID>5</productID>
+        <productName>Radiera</productName>
+        <productDetail>Descriere produs 5</productDetail>
+        <productPhoto>images/5.png</productPhoto>
+    </product>
+        <product>
+        <productID>6</productID>
+        <productName>Computer</productName>
+        <productDetail>Descriere produs 6</productDetail>
+        <productPhoto>images/6.png</productPhoto>
+    </product>
+        <product>
+        <productID>7</productID>
+        <productName>Telefon</productName>
+        <productDetail>Descriere produs 7</productDetail>
+        <productPhoto>images/7.jpg</productPhoto>
+    </product>
+        <product>
+        <productID>8</productID>
+        <productName>Laptop</productName>
+        <productDetail>Descriere produs 8</productDetail>
+        <productPhoto>images/8.png</productPhoto>
+    </product>
+</productDatabase>
