@@ -19,7 +19,6 @@ class ClientInterface():##o vom folosi inclusiv in cadrul aplicatiei grafice
         except:
             print("Cheia privata nu respecta criteriile")
         self._details=details
-        self._cart=[]
         self._tokenContract=w3.eth.contract(address=tokenContract,abi=abi.tokenAbi)
         self._shopContract=w3.eth.contract(address=shopContract,abi=abi.shopABI)
         self._tokenAddress=tokenContract
@@ -70,11 +69,16 @@ class ClientInterface():##o vom folosi inclusiv in cadrul aplicatiei grafice
         resp = self._tokenContract.functions.balanceOf(self._publicKey.address).call()
         return resp
     def getProductList(self):
-        return self._shopContract.functions.getProductList().call()
+        mylist=self._shopContract.functions.getProductList().call()
+        firstitems = list(map(lambda x: x[0], mylist))
+        return firstitems
 
-intf=ClientInterface(priv,"nuAm",tokenContract,shopContract)
-print(intf.getLeiBalance())
-print(intf._checkAllowance())
-print(intf.getProductList())
+#intf=ClientInterface(priv,"nuAm",tokenContract,shopContract)
+#print(intf.getLeiBalance())
+#print(intf._checkAllowance())
+#mylist=intf.getProductList()
+#firstitems=list(map(lambda x: x[0], mylist))
+#print(firstitems)
+
 #intf._allowLeiOnContract()
-intf.BuyWithLei([2,2],'Test')
+#intf.BuyWithLei([2,2],'Test')

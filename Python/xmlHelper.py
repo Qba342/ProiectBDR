@@ -9,6 +9,7 @@ class clientHandler():
 
     def getPrivateKey(self):
         root=self.tree.getroot()
+        #print(root.find('privateKey').text)
         return root.find('privateKey').text
 
     def getDetails(self):
@@ -73,9 +74,19 @@ class productHandler():
     def getProductList(self)->List[Product]:
         self._updateProducts()
         return self._productList
+
+    def getProductListIDS(self)->List[int]:
+        returnList=[]
+        root = self.tree.getroot()
+        prodcutEntities = root.findall('product')
+        for i in prodcutEntities:
+            x = int(i.find('productID').text)
+            returnList.append(x)
+        return returnList
 #c=clientHandler('clientDatabase.xml')
 #c.setDetails(surname='cuba')
 
-p=productHandler('productDatabase.xml')
-list=p.getProductList()
-print(list)
+#p=productHandler('productDatabase.xml')
+#p.getProductListIDS()
+#list=p.getProductList()
+#print(list)
