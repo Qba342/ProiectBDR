@@ -43,6 +43,7 @@ contract Shop {
     require(_owner == msg.sender, "Ownership Assertion: Caller of the function is not the owner.");
     _;
     }
+    event OrderCompleted(bytes32 orderId, string message,uint256[] prodList);//Pentru ce comanda reuseste
     //////////////END CONSTRUCTOR/OWNER///////////
 
     ///////////////////METHODS/SETTERS/////////////
@@ -71,7 +72,7 @@ contract Shop {
 
 
 
-    function buyFromShop(uint256[] memory combinedList)public  {
+    function buyFromShop(uint256[] memory combinedList, string memory details)public  {
 
         require(combinedList.length%2==0,"Lista data ca argument nu este ok");
 
@@ -94,7 +95,8 @@ contract Shop {
         
         IERC20 leu=IERC20(_leu);//instantiem contractul de lei
         leu.transferFrom(msg.sender,_owner,totalValue);//transferam de la adresa care doreste sa cumpere la cel care detine contractul
-
+        bytes32 orderId = keccak256(abi.encodePacked(msg.sender, block.timestamp));
+        emit  OrderCompleted(orderId, details,combinedList); //pentru a vedea ce ordine au fost completate
     }
 
     ////////////////////END METHODS/SETTERS////////////
@@ -115,7 +117,7 @@ contract Shop {
                 return i;
             }
         }
-        return 0; // Return a large value if the object is not found
+        return 0; 
     }
     ////////////////////END GETTERS/HELPERS///////////////
 
