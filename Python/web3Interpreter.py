@@ -72,6 +72,9 @@ class ClientInterface():##o vom folosi inclusiv in cadrul aplicatiei grafice
         mylist=self._shopContract.functions.getProductList().call()
         firstitems = list(map(lambda x: x[0], mylist))
         return firstitems
+    def getRawProductList(self):
+        mylist = self._shopContract.functions.getProductList().call()
+        return mylist
 
 #intf=ClientInterface(priv,"nuAm",tokenContract,shopContract)
 #print(intf.getLeiBalance())

@@ -55,7 +55,8 @@ class Product():
         self._productDetail=productDetail
         self._productPhoto=productPhoto
 
-
+    def getData(self):
+        return {"id":self._productID,"name":self._productName,"details":self._productDetail,"image_path":self._productPhoto}
 
 
 class productHandler():

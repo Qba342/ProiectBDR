@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 
 from xmlHelper import clientHandler,productHandler
@@ -94,7 +95,131 @@ class GUI():
 
         tk.mainloop()
 
+    def show_product_window(self,products):
+        root = tk.Tk()
+        root.title("Lista de Produse")
 
+        def update_details(event):
+            selected_index = product_listbox.curselection()
+            if selected_index:
+                selected_index = selected_index[0]
+                selected_product = products[selected_index]
+                details_text.delete(1.0, tk.END)
+                details_text.insert(tk.END, f"Detalii: {selected_product['details']}")
+                details_text.insert(tk.END, f"\nPret: {selected_product['pret']} lei")
+
+                # Afișează imaginea produsului
+                load_and_display_image(selected_product["image_path"])
+
+        def add_to_cart():
+            selected_index = product_listbox.curselection()
+            if selected_index:
+                selected_index = selected_index[0]
+                selected_product = products[selected_index]
+
+                # Adaugă produsul în coș
+                found = False
+                for item in cart:
+                    if item["id"] == selected_product["id"]:
+                        item["quantity"] += 1
+                        found = True
+                        break
+
+                if not found:
+                    cart.append({"id": selected_product["id"], "name": selected_product["name"],"pret":selected_product["pret"], "quantity": 1})
+                print(cart)
+                update_cart_label()
+
+        def update_cart_label():
+            #update la suma totala
+            sum = 0
+            for item in cart:
+                sum += item['pret'] * item['quantity']
+            print(sum)
+            #partea de afisare
+            cart_contents_text = "\n".join([f"{item['name']} - {item['quantity']} buc." for item in cart])
+            cart_contents_text+="\nTotal: "+str(sum)+" lei"
+            cart_contents.set(cart_contents_text)
+        def submit():
+            #vom extrage informatiile sub forma pe care ne-o cere programul in solidity
+            itemList=[]
+            quantityList=[]
+            for item in cart:
+                itemList.append(int(item['id']))
+                quantityList.append(int(item['quantity']))
+            cart.clear()
+            update_cart_label()
+            #vom face apelul functiei aici
+            myList=itemList+quantityList
+            self.web3cH.BuyWithLei(myList,self._details)
+            print("Ati cumparat produsele cu succes")
+
+        def clear_cart():
+            cart.clear()
+            update_cart_label()
+
+
+
+        def resize_image(image_path, target_width, target_height):
+            original_image = Image.open(image_path)
+            resized_image = original_image.resize((target_width, target_height))
+            return ImageTk.PhotoImage(resized_image)
+
+        def load_and_display_image(image_path):
+
+            target_width = 150
+            target_height = 100
+            resized_image = resize_image(image_path, target_width, target_height)
+
+            image_label.configure(image=resized_image)
+            image_label.image = resized_image  # păstrează o referință la imagine pentru a evita garbage collection
+
+        product_frame = ttk.Frame(root, padding="10")
+        product_frame.grid(row=0, column=0)
+
+
+        walletText="Portofelul tau: "+str(self.web3cH.getPublicAddress())+"\nBalanta contului: "+str(self.web3cH.getLeiBalance())+" lei"
+        wallet_info=tk.Label(product_frame,height=3,width=50,text=walletText)
+        wallet_info.pack()
+
+        product_listbox = tk.Listbox(product_frame, height=10, width=50)
+        product_listbox.pack(side="left", fill="y")
+        product_listbox.bind("<<ListboxSelect>>", update_details)
+
+        details_frame = ttk.Frame(root, padding="10")
+        details_frame.grid(row=0, column=1)
+
+        details_text = tk.Text(details_frame, height=10, width=50)
+        details_text.pack()
+
+
+        image_label = ttk.Label(details_frame)
+        image_label.pack()
+
+        cart_frame = ttk.Frame(root, padding="10")
+        cart_frame.grid(row=1, column=0, columnspan=2)
+
+        cart_label = ttk.Label(cart_frame, text="Coșul tău:")
+        cart_label.grid(row=0, column=0, sticky=tk.W)
+        cart_contents = tk.StringVar()
+        cart_contents_label = ttk.Label(cart_frame, textvariable=cart_contents)
+        cart_contents_label.grid(row=1, column=0, sticky=tk.W)
+
+        add_to_cart_button = ttk.Button(product_frame, text="Adaugă în Coș", command=add_to_cart)
+        add_to_cart_button.pack(pady=10)
+
+        delete_cart_button = ttk.Button(product_frame, text="Golește coșul", command=clear_cart)
+        delete_cart_button.pack(pady=10)
+
+        submit_button = ttk.Button(product_frame, text="Pune comanda", command=submit)
+        submit_button.pack(pady=10)
+
+        cart = []
+
+        for product in products:
+            product_listbox.insert(tk.END, f"{product['id']} - {product['name']}")
+
+        root.mainloop()
     def get_private_key(self,private_key, root):
         self._privateKey=private_key
         self.cH.setPrivateKey(self._privateKey) #dupa ce am instantiat, o vom seta
@@ -149,7 +274,31 @@ class GUI():
 
         return 0
 
+    def appendPrice(self,productList,priceTuple):
+        for pereche in priceTuple:
+            id=pereche[0]
+            pret=pereche[1]
+            for x in productList:
+
+                if str(x['id'])==str(id):
+                    x['pret']=pret
+        return productList
+
+    def test(self):
+        testList=[]
+        prods=self.pH.getProductList()
+        for prod in prods:
+            testList.append(prod.getData())
+        #print(testList)
+
+        #print(self.web3cH.getRawProductList())
+        testList=self.appendPrice(testList,self.web3cH.getRawProductList())
+        self.show_product_window(testList)
+
 
 gui=GUI()
-code=gui.run()
+code=gui.test()
 print("Aplicatia a intors codul "+str(code))
+
+
+##TODO:istoric comenzi, maybe better view :), testare
