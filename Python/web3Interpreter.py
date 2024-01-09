@@ -49,7 +49,8 @@ class ClientInterface():##o vom folosi inclusiv in cadrul aplicatiei grafice
         contract = self._shopContract
         if self._checkAllowance()==False:#daca nu avem voie sa tranzactionam, vom face allow pe tranzactionare
             self._allowLeiOnContract()
-            time.sleep(2)
+            print("Nu ati mai cumparat pana acum, vom astepta o perioada pentru confirmarea tranzactiei")
+            time.sleep(15)
 
         nonce = w3.eth.get_transaction_count(self._publicKey.address) #vom vedea cate tranzactii am facut pana acum
         TxnBuild = contract.functions.buyFromShop(
@@ -59,9 +60,12 @@ class ClientInterface():##o vom folosi inclusiv in cadrul aplicatiei grafice
             'from': self._publicKey.address,
             'nonce': nonce,
         })
-        signedTX=w3.eth.account.sign_transaction(TxnBuild,private_key=self._privateKey)
-        responseTX=w3.eth.send_raw_transaction(signedTX.rawTransaction)
-        print(w3.to_hex(responseTX))##de testat
+        try:
+            signedTX=w3.eth.account.sign_transaction(TxnBuild,private_key=self._privateKey)
+            responseTX=w3.eth.send_raw_transaction(signedTX.rawTransaction)
+            print(w3.to_hex(responseTX))##de testat
+        except:
+            print("Nu s-a facut approve pe tranzactie. Reporniti aplicatia")
 
     def getPublicAddress(self):
         return self._publicKey.address

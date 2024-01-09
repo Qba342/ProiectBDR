@@ -86,6 +86,31 @@ shopABI=[
     "stateMutability": "nonpayable",
     "type": "function"
   },
+{
+    "anonymous": False,
+        "inputs": [
+            {
+                "indexed": False,
+                "internalType": "bytes32",
+                "name": "orderId",
+                "type": "bytes32"
+            },
+            {
+                "indexed": False,
+                "internalType": "string",
+                "name": "message",
+                "type": "string"
+            },
+            {
+                "indexed": False,
+                "internalType": "uint256[]",
+                "name": "prodList",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "OrderCompleted",
+        "type": "event"
+	},
   {
     "constant": False,
     "inputs": [

@@ -119,7 +119,7 @@ class GUI():
 
                 # Adaugă produsul în coș
                 found = False
-                for item in cart:
+                for     item in cart:
                     if item["id"] == selected_product["id"]:
                         item["quantity"] += 1
                         found = True
@@ -127,7 +127,6 @@ class GUI():
 
                 if not found:
                     cart.append({"id": selected_product["id"], "name": selected_product["name"],"pret":selected_product["pret"], "quantity": 1})
-                print(cart)
                 update_cart_label()
 
         def update_cart_label():
@@ -135,13 +134,19 @@ class GUI():
             sum = 0
             for item in cart:
                 sum += item['pret'] * item['quantity']
-            print(sum)
+
             #partea de afisare
             cart_contents_text = "\n".join([f"{item['name']} - {item['quantity']} buc." for item in cart])
             cart_contents_text+="\nTotal: "+str(sum)+" lei"
             cart_contents.set(cart_contents_text)
+
+            walletText = "Portofelul tau: " + str(self.web3cH.getPublicAddress()) + "\nBalanta contului: " + str(self.web3cH.getLeiBalance()) + " lei"
+            wallet_info_var.set(walletText)
         def submit():
             #vom extrage informatiile sub forma pe care ne-o cere programul in solidity
+            sum = 0
+            for item in cart:
+                sum += item['pret'] * item['quantity']
             itemList=[]
             quantityList=[]
             for item in cart:
@@ -149,6 +154,9 @@ class GUI():
                 quantityList.append(int(item['quantity']))
             cart.clear()
             update_cart_label()
+            if sum>self.web3cH.getLeiBalance():
+                print("Nu aveti destui bani pentru a cumpara produsele")
+                return 50
             #vom face apelul functiei aici
             myList=itemList+quantityList
             self.web3cH.BuyWithLei(myList,self._details)
@@ -177,9 +185,8 @@ class GUI():
         product_frame = ttk.Frame(root, padding="10")
         product_frame.grid(row=0, column=0)
 
-
-        walletText="Portofelul tau: "+str(self.web3cH.getPublicAddress())+"\nBalanta contului: "+str(self.web3cH.getLeiBalance())+" lei"
-        wallet_info=tk.Label(product_frame,height=3,width=50,text=walletText)
+        wallet_info_var = tk.StringVar()
+        wallet_info=tk.Label(product_frame,height=3,width=50,textvariable=wallet_info_var)
         wallet_info.pack()
 
         product_listbox = tk.Listbox(product_frame, height=10, width=50)
@@ -215,7 +222,7 @@ class GUI():
         submit_button.pack(pady=10)
 
         cart = []
-
+        update_cart_label()
         for product in products:
             product_listbox.insert(tk.END, f"{product['id']} - {product['name']}")
 
@@ -270,6 +277,10 @@ class GUI():
         if self.isOutdated():
             print("Aplicatia necesita o sincronizare a bazelor de date")
             return 42
+        try:
+            self.authRun()
+        except:
+            print("A aparut o eroare in rularea programului")
 
 
         return 0
@@ -284,7 +295,7 @@ class GUI():
                     x['pret']=pret
         return productList
 
-    def test(self):
+    def authRun(self):
         testList=[]
         prods=self.pH.getProductList()
         for prod in prods:
@@ -297,8 +308,7 @@ class GUI():
 
 
 gui=GUI()
-code=gui.test()
-print("Aplicatia a intors codul "+str(code))
+code=gui.run()
 
 
 ##TODO:istoric comenzi, maybe better view :), testare
