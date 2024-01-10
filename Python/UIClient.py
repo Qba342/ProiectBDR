@@ -17,7 +17,8 @@ class GUI():
         self.cH=clientHandler("clientDatabase.xml")
         self._privateKey=self.cH.getPrivateKey()
         (self._name,self._surname,self._address,self._phone,self._email)=self.cH.getDetails()
-        self._details=self._name+" "+self._surname+" "+self._address+" "+self._phone+" "+self._email
+
+        self._details=str(self._name)+" "+str(self._surname)+" "+str(self._address)+" "+str(self._phone)+" "+str(self._email)
 
         #instantiem un handler pentru a avea o interfata cu blockchain-ul... il vom initializa din nou dupa ce vom face adaugarea datelor initiale
         self.web3cH=ClientInterface(self._privateKey,self._details,tokenContract,shopContract)
