@@ -278,12 +278,6 @@ class GUI():
         if self.isOutdated():
             print("Aplicatia necesita o sincronizare a bazelor de date")
             return 42
-        try:
-            self.authRun()
-        except:
-            print("A aparut o eroare in rularea programului")
-
-
         return 0
 
     def appendPrice(self,productList,priceTuple):
@@ -310,6 +304,8 @@ class GUI():
 
 gui=GUI()
 code=gui.run()
-
+if code==0:
+    x=GUI()
+    x.authRun()
 
 ##TODO:istoric comenzi, maybe better view :), testare
